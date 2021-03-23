@@ -8,7 +8,7 @@ public class MetalFactory implements ISignature
     double[] defect;
     String name;
     int Rate;
-    
+    //Конструктор по-умолчанию
     MetalFactory()
     {
         this.Rate = 0;
@@ -16,6 +16,7 @@ public class MetalFactory implements ISignature
         this.output = null;
         this.name = null;
     }
+    //Конструктор с параметрами и исключениями при неверных параметрах
     MetalFactory(String factoryname,int rate,int[] outvalues, double[] defvalues)
     {
         boolean acc = true;
@@ -40,7 +41,7 @@ public class MetalFactory implements ISignature
         else
         this.name = factoryname;
     }
-
+    //Метод получения общего кол-ва избыточной продукции (Функциональный метод №1)
     @Override
     public int excess()
     {
@@ -51,6 +52,7 @@ public class MetalFactory implements ISignature
         }
         return (sum-Rate);
     }
+    //Метод получения общего кол-ва полезной избыточной продукции (Функциональный метод №2)
     @Override
     public int usefulexcess()
     {
@@ -61,6 +63,8 @@ public class MetalFactory implements ISignature
         }
         return (useful - (Rate*output.length));
     }
+    //#region set
+    //Заполнить/установить значения для массива *продукции в месяц*
     @Override
     public void setoutput(int... values) {
         boolean acc = true;
@@ -70,15 +74,8 @@ public class MetalFactory implements ISignature
         throw new IllegalArgumentException("Значение не может быть меньше 0");
         else
         this.output = values;
-    }
-    @Override
-    public int[] getoutput() {
-        return this.output;
-    }
-    @Override
-    public double[] getdefect() {
-        return this.defect;
-    }
+    }  
+    //Заполнить/установить значения для массива *% дефекта в месяц*
     @Override
     public void setdefect(double... values) {
         boolean acc = true;
@@ -88,7 +85,8 @@ public class MetalFactory implements ISignature
         throw new IllegalArgumentException("Значение не может быть меньше 0 или больше 1");
         else
         defect = Arrays.copyOf(values, values.length);
-    }
+    } 
+    //Установить значение *норма производства в год*
     @Override
     public void setRate(int value) 
     {
@@ -96,15 +94,8 @@ public class MetalFactory implements ISignature
         throw new IllegalArgumentException("Значение не может быть меньше 0");
         else
         this.Rate = value;
-    }
-    @Override
-    public int getRate() {
-        return this.Rate;
-    }
-    @Override
-    public String getName() {
-        return this.name;
-    }
+    } 
+    //Установить значение *Название завода*
     @Override
     public void setName(String newname) {
         if(newname.equals("") || newname.equals(" ") || newname.equals(this.name))
@@ -112,6 +103,32 @@ public class MetalFactory implements ISignature
         else
         this.name = newname;  
     }
+    //#endregion
+
+    //#region get
+    //Получить массив *Произведено по месяцам*
+    @Override
+    public int[] getoutput() {
+        return this.output;
+    }
+    //Получить массив *% брака по месяцам*
+    @Override
+    public double[] getdefect() {
+        return this.defect;
+    }
+    //Получить значение *Норма производства в год*
+    @Override
+    public int getRate() {
+        return this.Rate;
+    }
+    //Получить значение *Имя завода*
+    @Override
+    public String getName() {
+        return this.name;
+    }
+    //#endregion
+
+    //#region Переопределений
     @Override
     public int hashCode()
     {
@@ -178,7 +195,7 @@ public class MetalFactory implements ISignature
     
         return true;
     }
-  
+    
     /*
     @Override
     public String toString() {
@@ -200,5 +217,5 @@ public class MetalFactory implements ISignature
         return result;
     }
      */
- 
+    //#region
 }

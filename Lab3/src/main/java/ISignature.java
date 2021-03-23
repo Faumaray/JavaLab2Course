@@ -1,5 +1,4 @@
-
-
+//Interface для описания сигнатур методов
 public interface ISignature 
 {
     public void setoutput(int ... values);
