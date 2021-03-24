@@ -1,4 +1,0 @@
-language: java
-jdk: jdk15
-after_success:
-  - mvn coveralls:report
