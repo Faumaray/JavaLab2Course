@@ -1,6 +1,7 @@
-
+package Factory;
 
 import java.util.Arrays;
+import java.io.*;
 
 public class TextileFactory implements ISignature
 {
@@ -9,14 +10,14 @@ public class TextileFactory implements ISignature
     String name;
     int Rate;
 
-    TextileFactory()
+    public TextileFactory()
     {
         this.Rate = 0;
         this.defect = null;
         this.output = null;
         this.name = null;
     }
-    TextileFactory(String factoryname,int rate,int[] outvalues , double[] defvalues)
+    public TextileFactory(String factoryname,int rate,int[] outvalues , double[] defvalues)
     {
         boolean acc = true;
         if(rate < 0)
@@ -180,6 +181,62 @@ public class TextileFactory implements ISignature
                 return false;
     
         return true;
+    }
+
+    @Override
+    public void outputAsBytes(OutputStream out)
+    {
+        DataOutputStream dataoutputter;
+        try 
+        {
+            dataoutputter = new DataOutputStream(out);
+            
+            dataoutputter.writeUTF(getClass().getName());
+            dataoutputter.writeUTF(name);
+            dataoutputter.writeInt(Rate);
+            dataoutputter.writeInt(output.length);
+
+            for(int i=0;i < output.length; i++)
+            {
+                dataoutputter.writeInt(output[i]);
+            }
+            
+            dataoutputter.writeInt(defect.length);
+
+            for(int i =0;i < defect.length; i++)
+            {
+                dataoutputter.writeDouble(defect[i]);
+            }
+
+            dataoutputter.flush();
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    @Override
+    public void writeAsText(Writer out)
+    {
+        PrintWriter printer = new PrintWriter(out);
+
+        printer.println(getClass().getName());
+        printer.println(name);
+        printer.println(Rate);
+        printer.println(output.length);
+
+        
+        for(int i=0;i < output.length; i++)
+        {
+            printer.println(output[i]);
+        }
+        
+        printer.println(defect.length);
+
+        for(int i =0;i < defect.length; i++)
+        {
+            printer.println(defect[i]);
+        }
+        printer.flush();
     }
    /* @Override
     public String toString() {

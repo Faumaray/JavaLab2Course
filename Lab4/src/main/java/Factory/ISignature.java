@@ -1,4 +1,7 @@
+package Factory;
 
+import java.io.OutputStream;
+import java.io.Writer;
 
 public interface ISignature 
 {
@@ -12,4 +15,7 @@ public interface ISignature
     public String getName();
     public int excess();
     public int usefulexcess();
+    void outputAsBytes(OutputStream out); // запись в байтовый поток
+
+    void writeAsText(Writer out); // запись в символьный поток
 }
