@@ -7,7 +7,11 @@ public interface ISignature
 {
     public void setoutput(int ... values);
     public int[] getoutput();
+    public int getEllOfOutput(int index);
     public double[] getdefect();
+    public double getEllOfDefect(int index);
+    public int getNumOfDefect();
+    public int getNumOfOutput();
     public void setdefect(double ... values);
     public void setRate(int value);
     public int getRate();
@@ -16,6 +20,6 @@ public interface ISignature
     public int excess();
     public int usefulexcess();
     void outputAsBytes(OutputStream out); // запись в байтовый поток
-
+    
     void writeAsText(Writer out); // запись в символьный поток
 }

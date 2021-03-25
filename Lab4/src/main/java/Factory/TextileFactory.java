@@ -1,6 +1,9 @@
 package Factory;
 
 import java.util.Arrays;
+
+import Exceptions.IllegalIndexException;
+
 import java.io.*;
 
 public class TextileFactory implements ISignature
@@ -80,6 +83,31 @@ public class TextileFactory implements ISignature
     @Override
     public double[] getdefect() {
         return this.defect;
+    }
+    @Override
+    public int getNumOfOutput() {
+       return this.output.length;
+    }
+    @Override
+    public int getNumOfDefect() {
+        return this.defect.length;
+    }
+    @Override
+    public int getEllOfOutput(int index)
+    {
+        if (index < 0 || index >= output.length) {
+            throw new IllegalIndexException("неверный индекс");
+        }
+
+        return this.output[index];
+    }
+    @Override
+    public double getEllOfDefect(int index) {
+        if (index < 0 || index >= defect.length) {
+            throw new IllegalIndexException("неверный индекс");
+        }
+
+        return this.defect[index];
     }
     @Override
     public void setdefect(double... values) 
