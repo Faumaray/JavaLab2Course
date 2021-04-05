@@ -48,15 +48,24 @@ public class PrimaryController {
 
     @FXML
     void initialize() {
+        int MIN_VALUE = Integer.parseInt(min.getText());
+        int MAX_VALUE = Integer.parseInt(max.getText());
+        int ANSWER_VALUE = (MAX_VALUE-MIN_VALUE)/2;
+        boolean correct = false;
+        while(correct == false)
+        {
+            output.insertText(output.getLength()+1, "Answer:"+ ANSWER_VALUE+"?");
+            
+        }
     }
     @FXML
-    void Correct(ActionEvent event) {
-
+    boolean Correct(ActionEvent event) {
+        return true;
     }
 
     @FXML
     void Higher(ActionEvent event) {
-
+        
     }
 
     @FXML
@@ -66,6 +75,5 @@ public class PrimaryController {
 
     @FXML
     void StartOrResetGame(ActionEvent event) {
-
     }
 }

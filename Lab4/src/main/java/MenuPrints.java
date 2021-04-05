@@ -30,6 +30,7 @@ public class MenuPrints
         System.out.print('\n' + "нажмите Enter, чтобы выйти в меню ... ");
         Scanner scan = new Scanner(System.in);
         scan.nextLine();
+        scan.close();
     }
     static void printISigArrAsISigOfEls(ISignature[] iArr) {
         System.out.print("база данных: ");
@@ -121,6 +122,7 @@ public class MenuPrints
             }
 
         } while(true);
+        scan.close();
         return num;
     }
     private static int printGetIndex(int maxIndex) {
@@ -146,7 +148,7 @@ public class MenuPrints
                 System.out.println("ошибка: введённая строка не является числом");
             }
         } while (true);
-
+        scan.close();
         return index;
     }
 
@@ -183,21 +185,107 @@ public class MenuPrints
                     System.out.println("ошибка: неверный пункт меню");
                 }
             } while (true);
+            scan.close();
         }
     }
     private static MetalFactory printGetAndSetMetalFactory() {
         System.out.print("введите имя MetalFactory ................................. ");
         Scanner scan = new Scanner(System.in);
         String factoryName = scan.nextLine();
-        System.out.print("заполните Metal Factory норму производства в год, кол-во произведённой продукции в месяц-ах и процент-ы дефекта в месяц-ах \n" + LINE);
+        System.out.print("заполните Metal Factory норму производства в год, количество месяцев, кол-во произведённой продукции в месяц-ах и процент-ы дефекта в месяц-ах \n" + LINE);
         int Rate = Integer.parseInt(scan.nextLine());
-        int[] numOutput = printGetOutput();
-        double[] numDefect = printGetDefect();
+        int months = Integer.parseInt(scan.nextLine());
+        int[] numOutput = printGetOutput(months);
+        double[] numDefect = printGetDefect(months);
         MetalFactory mf = new MetalFactory(factoryName, Rate, numOutput, numDefect);
         System.out.println("Metal Factory успешно создано");
         System.out.println();
-
+        scan.close();
         return mf;
+    }
+    private static TextileFactory printGetAndSetTextileFactory() {
+        System.out.print("введите имя TextileFactory ................................. ");
+        Scanner scan = new Scanner(System.in);
+        String factoryName = scan.nextLine();
+        System.out.print("заполните Textile Factory норму производства в год, количество месяцев, кол-во произведённой продукции в месяц-ах и процент-ы дефекта в месяц-ах \n" + LINE);
+        int Rate = Integer.parseInt(scan.nextLine());
+        int months = Integer.parseInt(scan.nextLine());
+        int[] numOutput = printGetOutput(months);
+        double[] numDefect = printGetDefect(months);
+        TextileFactory tf = new TextileFactory(factoryName, Rate, numOutput, numDefect);
+        System.out.println("Textile Factory успешно создано");
+        System.out.println();
+        scan.close();
+        return tf;
+    }
+    private static int[] printGetOutput(int months)
+    {
+        int[] out = new int[months];
+        Scanner scan = new Scanner(System.in);
+        int i=0;
+        do
+        {
+            if(i>months)
+            {
+                break;
+            }
+            int tmp = Integer.parseInt(scan.nextLine());
+            if(tmp < 0)
+            {
+                System.out.println("Значение не может быть меньше 0");
+            }
+            else
+            {
+                out[i]= tmp;
+                i++;
+            }
+        } while (true);
+        scan.close();
+        return out;
+    }
+    private static double[] printGetDefect(int months)
+    {
+        double[] out = new double[months];
+        Scanner scan = new Scanner(System.in);
+        int i=0;
+        do
+        {
+            if(i>months)
+            {
+                break;
+            }
+            double tmp = Double.parseDouble(scan.nextLine());
+            if(tmp < 0 || tmp > 1)
+            {
+                System.out.println("Значение не может быть меньше 0 или больше 1");
+            }
+            else
+            {
+                out[i]= tmp;
+                i++;
+            }
+        } while (true);
+        scan.close();
+        return out;
+    }
+    private static void printSetElsOfIsig(ISignature sig)
+    {
+        if (sig == null) {
+            System.out.println("операция невозможна: серия не задана");
+        } else {
+            for (int i = 0; i < sig.getNumOfEls(); i++) {
+                System.out.print("элемент под индексом  " + "[" + i + "]" + '\n' + LINE);
+                try {
+                    if (!printSetElOfSer(sig, i)) {
+                        i--;
+                    }
+                } catch (Exception exc) {
+                    System.out.println(exc.getMessage());
+                } finally {
+                    System.out.println();
+                }
+            }
+        }
     }
     
 }

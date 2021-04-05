@@ -1,6 +1,10 @@
 
 
-import java.util.Arrays;
+import java.util.Scanner;
+
+import Factory.Factorable;
+
+import static Menus.Menu.*;
 
 /*
 Предметная область:
@@ -17,73 +21,74 @@ public class App
 {
     public static void main(String[] args) 
     {
-        
-        ISignature[] array = new ISignature[]
-        {
-            new MetalFactory("Oppo",400,new int[]{650,400,300},new double[]{0.2,0.1}),
-            new TextileFactory("Oppo2",400,new int[]{650,1400,300},new double[]{0.2,0.5}),
-            new MetalFactory("Oppo3",400,new int[]{650,450,300},new double[]{0.6,0.1}),
-            new TextileFactory("Oppo4",400,new int[]{650,400,200},new double[]{0.3,0.1}),
-            new MetalFactory("Oppo5",400,new int[]{650,470,300},new double[]{0.2,0.2}),
-            new TextileFactory("Oppo6",400,new int[]{650,400,300},new double[]{0.2,0.1}),
-            new TextileFactory(),
-            new MetalFactory()
-        };
-        ISignature[] array2 = new ISignature[]{};
-        ISignature[] metal = new ISignature[]{};
-        ISignature[] textile = new ISignature[]{};
-        for(ISignature a : array)
-        {
-            try {
-            System.out.println(a.toString());
-            }
-            catch (NullPointerException e )
-            {
-                //System.out.println(e.getMessage());
-            }
-            if(a instanceof MetalFactory)
-            {
-                metal = Arrays.copyOf(metal, metal.length + 1);
-                metal[metal.length-1] = a;
-            }
-            if(a instanceof TextileFactory)
-            {
-                textile = Arrays.copyOf(textile, textile.length + 1);
-                textile[textile.length-1] = a;
-            }
-        }
-        try
-        {
-        for(int i=0; i<array.length; i++) 
-        {
-            for (int j=i+1; j<array.length; j++) 
-            {
-                
-               if(array[i].excess() == array[j].excess() || array[i].usefulexcess() == array[j].usefulexcess()) 
-               {
-                   array2 = Arrays.copyOf(array2, array2.length + 1);
-                   array2[array2.length-1] = array[i];
-                   array2 = Arrays.copyOf(array2, array2.length + 1);
-                   array2[array2.length-1] = array[j];
-               }
-            }
-        }
-    }
-    catch(NullPointerException e){};
-        System.out.println("Только Металл");
-        for(ISignature a : metal){System.out.println(a.getName());}
-        System.out.println("Только Текстиль");
-        for(ISignature a : textile){System.out.println(a.getName());}
-        System.out.println("С одинаковым выходом метода");
-        for(ISignature a : array2)
-        {
-            System.out.println(a.getName());
-            System.out.println(a.excess());
-            System.out.println(a.usefulexcess());
-        }
+        Factorable[] db = null;
+        Scanner scan = new Scanner(System.in);
+        String m;
 
+        do {
+            System.out.print("меню\n" +
+                    line +
+                    " 1 -- создать базу\n" +
+                    " 2 -- задание элемента базы\n" +
+                    " 3 -- вывести полную информацию базы\n" +
+                    " 4 -- найти в массиве объекты,\n" +
+                    "      первый функциональный метод которых возвращают одинаковый результат,\n" +
+                    "      поместить такие объекты в другой массив\n" +
+                    " 5 -- найти в массиве объекты,\n" +
+                    "      второй функциональный метод которых возвращают одинаковый результат,\n" +
+                    "      поместить такие объекты в другой массив\n" +
+                    " 6 -- разбить исходный массив на два массива,\n" +
+                    "      в которых будут храниться однотипные элементы\n" +
+                    line +
+                    "0 -- выйти\n" +
+                    line +
+                    "выбор ... ");
+            m = scan.nextLine();
+            switch (m) {
+                case "1":
+                    printTask(" 1 -- создать базу");
+                    System.out.print("задание размера базы: ");
+                    db = printGetFactorableleArr();
+                    break;
 
+                case "2":
+                    printTask(" 2 -- задание элемента базы");
+                    printDbAsNamesOfEls(db);
+                    System.out.println();
 
+                    printSetElOfDb(db);
+                    break;
+
+                case "3":
+                    printTask(" 3 -- вывести полную информацию базы");
+                    printDb(db);
+                    break;
+
+                case "4":
+                    printTask(" 4 -- найти в массиве объекты,\n" +
+                            "      первый функциональный метод которых возвращают одинаковый результат,\n" +
+                            "      поместить такие объекты в другой массив");
+                    printGetArrWithTwoElsWithSameExcess(db);
+                    break;
+
+                case "5":
+                    printTask(" 5 -- найти в массиве объекты,\n" +
+                            "      второй функциональный метод которых возвращают одинаковый результат,\n" +
+                            "      поместить такие объекты в другой массив");
+                    printGetArrWithTwoElsWithSameUsefulExcess(db);
+                    break;
+
+                case "6":
+                    printTask(" 5 -- разбить исходный массив на два массива,\n" +
+                            "      в которых будут храниться однотипные элементы");
+                    printSplitDbIntoTwoMetalAndTextileArrs(db);
+                    break;
+                default:
+                    break;
+            }
+            printExit();
+            System.out.println();
+        } while (!m.equals("0"));
     }
  
 }
