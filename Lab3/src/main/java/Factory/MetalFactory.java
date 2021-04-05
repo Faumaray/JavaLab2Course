@@ -2,17 +2,17 @@ package Factory;
 import Exceptions.IllegalIndexException;
 public class MetalFactory implements Factorable
 {
-    int[] output;
-    double[] defect;
-    String name;
-    int Rate;
+    private int[] output;
+    private double[] defect;
+    private String name;
+    private int Rate;
     //Конструктор по-умолчанию
     MetalFactory()
     {
-        this.Rate = 0;
-        this.defect = null;
-        this.output = null;
-        this.name = null;
+        Rate = 100;
+        output = new int[1];
+        defect = new double[output.length];
+        name = "Без Названия";
     }
     //Конструктор с параметрами и исключениями при неверных параметрах
     public MetalFactory(String factoryname,int rate,int numberOfMonths)
