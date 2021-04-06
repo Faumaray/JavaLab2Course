@@ -1,48 +1,34 @@
 package Factory;
-import java.io.*;
-import java.util.Arrays;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.io.Writer;
 
 import Exceptions.IllegalIndexException;
-
-public class MetalFactory implements ISignature
+public class MetalFactory implements Factorable
 {
-    int[] output;
-    double[] defect;
-    String name;
-    int Rate;
-    
-    public MetalFactory()
+    private int[] output;
+    private double[] defect;
+    private String name;
+    private int Rate;
+    //Конструктор по-умолчанию
+    MetalFactory()
     {
-        this.Rate = 0;
-        this.defect = null;
-        this.output = null;
-        this.name = null;
+        Rate = 100;
+        output = new int[1];
+        defect = new double[output.length];
+        name = "Без Названия";
     }
-    public MetalFactory(String factoryname,int rate,int[] outvalues, double[] defvalues)
+    //Конструктор с параметрами и исключениями при неверных параметрах
+    public MetalFactory(String factoryname,int rate,int numberOfMonths)
     {
-        boolean acc = true;
-        if(rate < 0)
-        throw new IllegalArgumentException("Значение не может быть меньше 0");
-        else
-        this.Rate = rate;
-        for(int value : outvalues)
-        {if (value<0){acc = false;}}
-        if(acc == false)
-        throw new IllegalArgumentException("Значение не может быть меньше 0");
-        else
-        this.output = outvalues;
-        for(double value : defvalues)
-        if (value<0 || value > 1){acc = false;}
-        if(acc == false)
-        throw new IllegalArgumentException("Значение не может быть меньше 0 или больше 1");
-        else
-        this.defect = Arrays.copyOf(defvalues, output.length);
-        if(factoryname.equals("") || factoryname.equals(" "))
-        throw new IllegalArgumentException("Новые имя не может быть быть пустым");
-        else
         this.name = factoryname;
+        this.Rate = rate;
+        output = new int[numberOfMonths];
+        defect = new double[output.length];
     }
-
+    //Метод получения общего кол-ва избыточной продукции (Функциональный метод №1)
     @Override
     public int excess()
     {
@@ -53,6 +39,7 @@ public class MetalFactory implements ISignature
         }
         return (sum-Rate);
     }
+    //Метод получения общего кол-ва полезной избыточной продукции (Функциональный метод №2)
     @Override
     public int usefulexcess()
     {
@@ -63,82 +50,84 @@ public class MetalFactory implements ISignature
         }
         return (useful - (Rate*output.length));
     }
+    //#region set
     @Override
-    public void setoutput(int... values) {
-        boolean acc = true;
-        for(int value : values)
-        if (value<0){acc = false;}
-        if(acc == false)
-        throw new IllegalArgumentException("Значение не может быть меньше 0");
-        else
-        this.output = values;
-    }
-    @Override
-    public int[] getoutput() {
-        return this.output;
-    }
-    @Override
-    public double[] getdefect() {
-        return this.defect;
-    }
-    @Override
-    public int getNumOfOutput() {
-       return this.output.length;
-    }
-    @Override
-    public int getNumOfDefect() {
-        return this.defect.length;
-    }
-    @Override
-    public int getEllOfOutput(int index)
+    public void setName(String newname)
     {
-        if (index < 0 || index >= output.length) {
-            throw new IllegalIndexException("неверный индекс");
-        }
-
-        return this.output[index];
-    }
-    @Override
-    public double getEllOfDefect(int index) {
-        if (index < 0 || index >= defect.length) {
-            throw new IllegalIndexException("неверный индекс");
-        }
-
-        return this.defect[index];
-    }
-    @Override
-    public void setdefect(double... values) {
-        boolean acc = true;
-        for(double value : values)
-            if (value<0 || value > 1){acc = false;}
-        if(acc == false)
-        throw new IllegalArgumentException("Значение не может быть меньше 0 или больше 1");
-        else
-        defect = Arrays.copyOf(values, values.length);
+        this.name = newname;
     }
     @Override
     public void setRate(int value) 
     {
-        if(value < 0)
-        throw new IllegalArgumentException("Значение не может быть меньше 0");
-        else
+        if(value < Factorable.MIN_NUM_OF_RATE)
+        {
+            throw new IllegalArgumentException("Неверное значение годовой нормы");
+        }    
         this.Rate = value;
     }
+    @Override
+    public void setEl(int index, int value) 
+    {
+        if(index < 0 || index >= output.length)
+        {
+            throw new IllegalIndexException("Неверный индекс");
+        }    
+        if(value < Factorable.MIN_VALUE_OF_OUTPUT)
+        {
+            throw new IllegalArgumentException("Неверное значений");
+        }
+        output[index]=value;
+    }
+    @Override
+    public void setDefectOfEl(int index, double value) 
+    {
+        if(index < 0 || index >= output.length)
+        {
+            throw new IllegalIndexException("Неверный индекс");
+        }    
+        if(value < Factorable.MIN_VALUE_OF_DEFECT || value > Factorable.MAX_VALUE_OF_DEFECT)
+        {
+            throw new IllegalArgumentException("Неверное процентное значения дефекта");
+        }   
+        defect[index]=value;
+    }
+    //Заполнить/установить значения для массива *продукции в месяц*
+    //Получить значение *Норма производства в год*
     @Override
     public int getRate() {
         return this.Rate;
     }
+    //Получить значение *Имя завода*
     @Override
     public String getName() {
         return this.name;
     }
     @Override
-    public void setName(String newname) {
-        if(newname.equals("") || newname.equals(" ") || newname.equals(this.name))
-        throw new IllegalArgumentException("Новые имя не может быть быть старым или пустым");
-        else
-        this.name = newname;  
+    public int getNumberOfEls() 
+    {
+        return output.length;    
     }
+    @Override
+    public int getEl(int index) 
+    {
+        if(index < 0 || index >= output.length)
+        {
+            throw new IllegalIndexException("Неверный индекс");
+        } 
+        return output[index];   
+    }
+    @Override
+    public double getDefect(int index) 
+    {
+        if(index < 0 || index >= defect.length)
+        {
+            throw new IllegalIndexException("Неверный индекс");
+        }     
+        return defect[index];
+    }
+    //#endregion
+
+    //#region Переопределений
     @Override
     public int hashCode()
     {
@@ -159,128 +148,104 @@ public class MetalFactory implements ISignature
     @Override
     public String toString()
     {
-        String out = "";
-        String def = "";
-        for(int value : this.output) {out += value + " ";}
-        for(double value : this.defect) {def += value + " ";}
-        return "Металлургический комбинат: "+ this.name + "\nНорма производства в месяц: " + this.Rate +
-                "\nПроизведено за каждый месяц: " + out + "\nПроцент брака за каждый месяц: " + def;
+        String output = "";
+        output += "Название завода................ " + name + "\n";
+        output += "Норма производства в год....... " + Rate + "\n";
+        output += "Кол-во избыточной продукции.... " + excess() + "\n";
+        output += "Кол-во полезного избытка....... " + usefulexcess() + "\n";
+        output += "Кол-во месяцев................. " + getNumberOfEls() + "\n";
+        output += "Тип объекта.................... " + getClass() + "\n";
+        output += "-------------------------------\n";
+        output += monthsInfo();
+        return output;  
     }
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        TextileFactory that = (TextileFactory) o;
-        return Rate == that.Rate && Compare(output, that.output)  && name.equals(that.name)&& Compare(defect, that.defect);
-    }
-    public static boolean Compare(double[] a, double[] a2) {
-        if (a==a2)   // checks for same array reference
-            return true;
-        if (a==null || a2==null)  // checks for null arrays
-            return false;
-    
-        int length = a.length;
-        if (a2.length != length)  // arrays should be of equal length
-            return false;
-    
-        for (int i=0; i<length; i++)  // compare array values
-            if (a[i] != a2[i])
-                return false;
-    
-        return true;
-    }
-    public static boolean Compare(int[] a, int[] a2) {
-        if (a==a2)   // checks for same array reference
-            return true;
-        if (a==null || a2==null)  // checks for null arrays
-            return false;
-    
-        int length = a.length;
-        if (a2.length != length)  // arrays should be of equal length
-            return false;
-    
-        for (int i=0; i<length; i++)  // compare array values
-            if (a[i] != a2[i])
-                return false;
-    
-        return true;
-    }
-    
-    @Override
-    public void outputAsBytes(OutputStream out)
+    private String monthsInfo()
     {
-        DataOutputStream dataoutputter;
+        int lastIndex = output.length - 1;
+        String out = "";
+        for(int i = 0; i < lastIndex; i++)
+        {
+            out += "Произведено в " + i + " месяц: " + output[i] + 
+            " (Процент дефекта: " + defect[i]+")\n";
+        }
+        out += "Произведено в " + lastIndex + " месяц: " + output[lastIndex] + 
+            " (Процент дефекта: " + defect[lastIndex]+")";
+        return out;
+    }
+    @Override
+    public boolean equals(Object o) 
+    {
+        boolean isFactorable = o instanceof Factorable;
+
+        if(isFactorable)
+        {
+            Factorable anotherFactory = (Factorable) o;
+
+            if(this.name.equals(anotherFactory.getName()))
+                return areElsEqual(anotherFactory);
+        }
+        return false;
+    }
+    private boolean areElsEqual(Factorable anotherFactory)
+    {
+        if(!areRateAndElsEqual(anotherFactory))
+        {
+            return false;
+        }
+        for(int i = 0; i < output.length; i++)
+        {
+            if(!isElEqual(i, anotherFactory))
+                return false; 
+        }
+
+        return true;
+    }
+    private boolean areRateAndElsEqual(Factorable anotherFactory)
+    {
+        return this.getRate() == anotherFactory.getRate() && 
+        this.output.length == anotherFactory.getNumberOfEls();
+    }
+    private boolean isElEqual(int index,Factorable anotherFactory)
+    {
+        return output[index] == anotherFactory.getEl(index) &&
+        defect[index] == anotherFactory.getDefect(index);
+    }
+
+    @Override
+    public void outputAsBytes(OutputStream out) 
+    {
+        DataOutputStream dataOuputter = new DataOutputStream(out);
         try 
         {
-            dataoutputter = new DataOutputStream(out);
-            
-            dataoutputter.writeUTF(getClass().getName());
-            dataoutputter.writeUTF(name);
-            dataoutputter.writeInt(Rate);
-            dataoutputter.writeInt(output.length);
-
-            for(int i=0;i < output.length; i++)
+            dataOuputter.writeUTF(getClass().getName());
+            dataOuputter.writeUTF(name);
+            dataOuputter.writeInt(Rate);
+            dataOuputter.writeInt(output.length);
+            for (int index = 0; index < output.length; index++)
             {
-                dataoutputter.writeInt(output[i]);
-            }
-            
-            dataoutputter.writeInt(defect.length);
-
-            for(int i =0;i < defect.length; i++)
-            {
-                dataoutputter.writeDouble(defect[i]);
-            }
-
-            dataoutputter.flush();
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
+                dataOuputter.writeInt(output[index]);
+                dataOuputter.writeDouble(defect[index]);
+            }    
+            dataOuputter.flush();
+        } catch (IOException e) 
+        {
+            System.err.println(e.getMessage());
         }
     }
-
     @Override
-    public void writeAsText(Writer out)
+    public void writeAsText(Writer out) 
     {
         PrintWriter printer = new PrintWriter(out);
-
+        
         printer.println(getClass().getName());
         printer.println(name);
         printer.println(Rate);
         printer.println(output.length);
-
-        
-        for(int i=0;i < output.length; i++)
+        for (int index = 0;index < output.length; index++)
         {
-            printer.println(output[i]);
-        }
-        
-        printer.println(defect.length);
-
-        for(int i =0;i < defect.length; i++)
-        {
-            printer.println(defect[i]);
+            printer.println(output[index]);
+            printer.println(defect[index]);
         }
         printer.flush();
     }
-    /*
-    @Override
-    public String toString() {
-        return "MetalFactory{" +
-                "output=" + Arrays.toString(output) +
-                ", defect=" + Arrays.toString(defect) +
-                ", name='" + name + '\'' +
-                ", Rate=" + Rate +
-                '}';
-    }
-
-   
-
-    @Override
-    public int hashCode() {
-        int result = Objects.hash(name, Rate);
-        result = 31 * result + Arrays.hashCode(output);
-        result = 31 * result + Arrays.hashCode(defect);
-        return result;
-    }
-     */
- 
 }
