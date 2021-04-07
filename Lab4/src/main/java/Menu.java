@@ -3,8 +3,6 @@ import Factory.Factorable;
 
 import java.util.Scanner;
 
-import javax.xml.parsers.FactoryConfigurationError;
-
 import static MenusMetod.MenuPrints.*;
 
 public class Menu
@@ -15,7 +13,7 @@ public class Menu
         Factorable f = null;
 
         Scanner scan = new Scanner(System.in);
-        String menuItem;
+        String m;
         do {
             System.out.print(LINE +
                     "РАБОТА С БАЗОЙ:\n" +
@@ -60,8 +58,8 @@ public class Menu
                     "0 -- выйти\n" +
                     LINE +
                     "выбор ... ");
-            menuItem = scan.nextLine();
-            switch (menuItem) {
+            m = scan.nextLine();
+            switch (m) {
                 // region РАБОТА С БАЗОЙ
                 case "1":
                     printTask(" 1 -- вывести полную информацию базы");
@@ -202,8 +200,7 @@ public class Menu
             }
             printExit();
             System.out.println();
-        } while (!menuItem.equals("0"));
-        scan.close();
+        } while (!m.equals("0"));
     }
  
 }

@@ -32,7 +32,6 @@ public class MenuPrints
         System.out.print('\n' + "нажмите Enter, чтобы выйти в меню ... ");
         Scanner scan = new Scanner(System.in);
         scan.nextLine();
-        scan.close();
     }
     public static void printFactArrAsNamesOfEls(Factorable[] fArr) {
         System.out.print("база данных: ");

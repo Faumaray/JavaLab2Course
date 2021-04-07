@@ -1,14 +1,20 @@
 package Ray;
 
 import java.net.URL;
+import java.nio.file.Path;
 import java.util.ResourceBundle;
 
+import javafx.css.Stylesheet;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.Spinner;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.VBox;
 
 public class PrimaryController {
@@ -38,42 +44,125 @@ public class PrimaryController {
     private Button start_reset;
 
     @FXML
-    private TextField min;
-
-    @FXML
-    private TextField max;
-
-    @FXML
     private TextArea output;
 
     @FXML
-    void initialize() {
-        int MIN_VALUE = Integer.parseInt(min.getText());
-        int MAX_VALUE = Integer.parseInt(max.getText());
-        int ANSWER_VALUE = (MAX_VALUE-MIN_VALUE)/2;
-        boolean correct = false;
-        while(correct == false)
+    private Spinner<Integer> min;
+
+    @FXML
+    private Spinner<Integer> max;
+
+    @FXML
+    private RadioButton style1;
+
+    @FXML
+    private ToggleGroup styling;
+
+    @FXML
+    private RadioButton style2;
+
+    @FXML
+    private RadioButton style3;
+
+    int minvalue;
+    int maxvalue;
+    int estimatednumber;
+    Guesser guesser;
+
+    @FXML
+    void Correct(ActionEvent event) 
+    {
+        output.appendText("Я угадал! Вы загадали ... " + Integer.toString(estimatednumber));
+        output.appendText(System.lineSeparator());
+        output.appendText("Хотите сыграть ещё раз? Нажмите Start/Reset.");
+        output.appendText(System.lineSeparator());
+    }
+
+    @FXML
+    void Higher(ActionEvent event) 
+    {
+        if(minvalue == maxvalue)
         {
-            output.insertText(output.getLength()+1, "Answer:"+ ANSWER_VALUE+"?");
-            
+            output.appendText("Ты жульничаешь, я угадал число");
+            output.appendText(System.lineSeparator());
+            output.appendText("Хотите сыграть ещё раз? Нажмите Start/Reset.");
+            output.appendText(System.lineSeparator());
+        }
+        else
+        {
+            minvalue = estimatednumber + 1;
+            guesser.setMinNumb(minvalue);
+            guess();
         }
     }
+
     @FXML
-    boolean Correct(ActionEvent event) {
-        return true;
+    void Lower(ActionEvent event) 
+    {
+        if(minvalue == maxvalue)
+        {
+            output.appendText("Ты жульничаешь, я угадал число");
+            output.appendText(System.lineSeparator());
+            output.appendText("Хотите сыграть ещё раз? Нажмите Start/Reset.");
+            output.appendText(System.lineSeparator());
+        }
+        else
+        {
+            maxvalue = estimatednumber - 1;
+            guesser.setMaxNumb(maxvalue);
+            guess();
+        }
     }
 
     @FXML
-    void Higher(ActionEvent event) {
-        
+    void StartOrResetGame(ActionEvent event) 
+    {
+        output.clear();
+        createguesser();
+        guess();
+    }
+    public void createguesser()
+    {
+        minvalue = (int) min.getValue();
+        maxvalue = (int) max.getValue();
+        guesser = new Guesser(minvalue, maxvalue);
+    }
+
+    private void guess()
+    {
+        estimatednumber = guesser.guess();
+        output.appendText("Я думаю, что ....");
+        output.appendText(Integer.toString(estimatednumber));
+        output.appendText(System.lineSeparator());
     }
 
     @FXML
-    void Lower(ActionEvent event) {
-
+    void changestyleto1(ActionEvent event) 
+    {
+        vbox.getStylesheets().clear();
+        vbox.getStylesheets().add("MistSilverSkin.css");
     }
 
     @FXML
-    void StartOrResetGame(ActionEvent event) {
+    void changetostyle2(ActionEvent event) 
+    {
+        vbox.getStylesheets().clear();
+        vbox.getStylesheets().add("Style.css");
+    }
+
+    @FXML
+    void changetostyle3(ActionEvent event) 
+    {
+        vbox.getStylesheets().clear();
+        vbox.getStylesheets().add("bootstrap3.css");
+    }
+
+    @FXML
+    void initialize() 
+    {
+        vbox.getStylesheets().add("MistSilverSkin.css");
+        style1.setText("Mist Silver");
+        style2.setText("Dark Theme");
+        style3.setText("BootStrap 3");
     }
 }

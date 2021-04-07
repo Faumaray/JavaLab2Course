@@ -3,11 +3,12 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.io.Serializable;
 import java.io.Writer;
 
 import Exceptions.IllegalIndexException;
 
-public class TextileFactory implements Factorable
+public class TextileFactory implements Factorable, Serializable
 {
     private int[] output;
     private double[] defect;

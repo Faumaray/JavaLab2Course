@@ -35,29 +35,40 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox id="mainWindow" fx:id="vbox" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Ray.PrimaryController">
+<VBox id="mainWindow" fx:id="vbox" prefHeight="550.0" prefWidth="950.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Ray.PrimaryController">
   <children>
-    <SplitPane fx:id="splitpane" focusTraversable="true" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
+    <SplitPane id=".splitpane" fx:id="splitpane" focusTraversable="true" prefHeight="-1.0" prefWidth="-1.0" styleClass=".splitpane" VBox.vgrow="ALWAYS">
       <items>
-        <AnchorPane>
+        <AnchorPane prefHeight="795.0" prefWidth="1403.0">
           <children>
-                  <Button fx:id="higher" layoutX="7.0" layoutY="169.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="207.0" text="Higher" AnchorPane.leftAnchor="7.0" />
-                  <Button fx:id="lower" layoutX="8.0" layoutY="207.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="207.0" text="Lower" AnchorPane.leftAnchor="7.0" />
-                  <Button fx:id="correct" layoutX="8.0" layoutY="248.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="207.0" text="Correct" AnchorPane.leftAnchor="7.0" />
-                  <Button fx:id="start_reset" layoutX="9.0" layoutY="318.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="207.0" text="Start\Reset" AnchorPane.leftAnchor="7.0" />
-                  <TextField fx:id="min" layoutX="14.0" layoutY="66.0" prefHeight="25.0" prefWidth="196.0" AnchorPane.leftAnchor="14.0" />
-                  <TextField fx:id="max" layoutX="15.0" layoutY="122.0" prefHeight="25.0" prefWidth="196.0" AnchorPane.leftAnchor="14.0" />
-                  <ScrollPane layoutX="216.0" layoutY="14.0" prefHeight="554.0" prefWidth="679.0">
-                    <content>
-                      <AnchorPane prefHeight="550.0" prefWidth="675.0">
-                           <children>
-                              <TextArea fx:id="output" editable="false" prefHeight="554.0" prefWidth="679.0" AnchorPane.bottomAnchor="-373.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="-201.0" AnchorPane.topAnchor="0.0" />
-                           </children>
-                        </AnchorPane>
-                    </content>
-                  </ScrollPane>
+                  <Button fx:id="higher" layoutX="7.0" layoutY="169.0" mnemonicParsing="false" onAction="#Higher" prefHeight="25.0" prefWidth="207.0" text="Higher" AnchorPane.leftAnchor="7.0" />
+                  <Button fx:id="lower" layoutX="8.0" layoutY="207.0" mnemonicParsing="false" onAction="#Lower" prefHeight="25.0" prefWidth="207.0" text="Lower" AnchorPane.leftAnchor="7.0" />
+                  <Button fx:id="correct" layoutX="8.0" layoutY="248.0" mnemonicParsing="false" onAction="#Correct" prefHeight="25.0" prefWidth="207.0" text="Correct" AnchorPane.leftAnchor="7.0" />
+                  <Button fx:id="start_reset" layoutX="9.0" layoutY="318.0" mnemonicParsing="false" onAction="#StartOrResetGame" prefHeight="25.0" prefWidth="207.0" text="Start\Reset" AnchorPane.leftAnchor="7.0" />
+                  <AnchorPane layoutX="226.0" prefHeight="770.0" prefWidth="870.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="226.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <children>
+                        <TextArea id="output" fx:id="output" editable="false" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                     </children>
+                  </AnchorPane>
                   <Label layoutX="15.0" layoutY="49.0" text="Min" />
                   <Label layoutX="15.0" layoutY="105.0" text="Max" />
+                  <Spinner id="min" fx:id="min" editable="true" layoutX="17.0" layoutY="72.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="25.0" prefWidth="188.0" AnchorPane.leftAnchor="17.0">
+                    <valueFactory>
+                      <SpinnerValueFactory.IntegerSpinnerValueFactory amountToStepBy="1" initialValue="0" max="10000" min="0" />
+                    </valueFactory>
+                  </Spinner>
+                  <Spinner id="max" fx:id="max" editable="true" layoutX="17.0" layoutY="131.0" prefHeight="23.0" prefWidth="188.0" AnchorPane.leftAnchor="17.0" >
+                    <valueFactory>
+                      <SpinnerValueFactory.IntegerSpinnerValueFactory min="0" max="10000" initialValue="10000" amountToStepBy="1"/>
+                    </valueFactory>
+                  </Spinner>
+                  <RadioButton id="style1" fx:id="style1" layoutX="7.0" layoutY="354.0" mnemonicParsing="false" onAction="#changestyleto1" prefHeight="37.0" prefWidth="188.0" selected="true" text="Style 1" AnchorPane.leftAnchor="7.0" AnchorPane.topAnchor="354.0">
+                     <toggleGroup>
+                        <ToggleGroup fx:id="styling" />
+                     </toggleGroup>
+                  </RadioButton>
+                  <RadioButton fx:id="style2" layoutX="7.0" layoutY="391.0" mnemonicParsing="false" onAction="#changetostyle2" prefHeight="37.0" prefWidth="188.0" text="Style 2" toggleGroup="$styling" AnchorPane.leftAnchor="7.0" AnchorPane.topAnchor="391.0" />
+                  <RadioButton fx:id="style3" layoutX="7.0" layoutY="428.0" mnemonicParsing="false" onAction="#changetostyle3" prefHeight="45.0" prefWidth="188.0" text="Style 3" toggleGroup="$styling" AnchorPane.leftAnchor="7.0" AnchorPane.topAnchor="428.0" />
           </children>
         </AnchorPane>
       </items>

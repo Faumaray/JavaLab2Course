@@ -3,10 +3,11 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.io.Serializable;
 import java.io.Writer;
 
 import Exceptions.IllegalIndexException;
-public class MetalFactory implements Factorable
+public class MetalFactory implements Factorable, Serializable
 {
     private int[] output;
     private double[] defect;
