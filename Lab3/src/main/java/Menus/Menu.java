@@ -6,6 +6,7 @@ import Factory.Factorable;
 
 import static Factory.Factories.*;
 
+import java.util.List;
 import java.util.Scanner;
 
 public class Menu 
@@ -340,28 +341,41 @@ public class Menu
     }
     public static void printGetArrWithTwoElsWithSameExcess(Factorable[] f) 
     {
-        Factorable[] arr;
-
+        List<Factorable[]> arr;
         try {
             arr = getArrWithTwoElsWithSameExcess(f);
             System.out.println("база данных успешно разделена");
             System.out.println();
-
-            printDb(arr);
+            int count = 0;
+            for (Factorable[] factorables : arr) {
+                System.out.println("Масств №"+ count);
+                printDbAsNamesOfEls(factorables);  
+                count++; 
+            }
+            System.out.println("Какой массив вывести?");
+            int choice = printGetIndex(arr.size()-1);
+            printDb(arr.get(choice));
         } catch (Exception exc) {
             System.err.println(exc.getMessage());
         }
     }
     public static void printGetArrWithTwoElsWithSameUsefulExcess(Factorable[] f) 
     {
-        Factorable[] arr;
+        List<Factorable[]> arr;
 
         try {
             arr = getArrWithTwoElsWithSameUsefulExcess(f);
             System.out.println("база данных успешно разделена");
             System.out.println();
-
-            printDb(arr);
+            int count = 0;
+            for (Factorable[] factorables : arr) {
+                System.out.println("Масств №"+ count);
+                printDbAsNamesOfEls(factorables);  
+                count++; 
+            }
+            System.out.println("Какой массив вывести?");
+            int choice = printGetIndex(arr.size()-1);
+            printDb(arr.get(choice));
         } catch (Exception exc) {
             System.err.println(exc.getMessage());
         }

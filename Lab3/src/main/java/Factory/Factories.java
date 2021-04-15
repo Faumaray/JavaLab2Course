@@ -1,7 +1,11 @@
 package Factory;
 import Exceptions.DatabaseNotSetException;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 public class Factories 
@@ -84,7 +88,7 @@ public class Factories
             return indexesOfTextileFactorys;
         }
     }
-    public static Factorable[] getArrWithTwoElsWithSameExcess(Factorable[] f) throws DatabaseNotSetException
+    public static List<Factorable[]> getArrWithTwoElsWithSameExcess(Factorable[] f) throws DatabaseNotSetException
     {
         if(f == null)
         {
@@ -92,27 +96,44 @@ public class Factories
         }
         else
         {
+            List<Factorable[]> list = new ArrayList<Factorable[]>();
             int[] excesses = getExcesses(f);
-
+            boolean[] result = new boolean[f.length];
+            Arrays.fill(result, Boolean.TRUE);
             int curIndex;
             int indexToCompareWith;
             int len = excesses.length;
-
+            List<Factorable> tmp = new ArrayList<Factorable>();
             for(curIndex = 0; curIndex < len; curIndex++)
             {
+                tmp.add(f[curIndex]);
                 for(indexToCompareWith = curIndex+1; indexToCompareWith < len; indexToCompareWith++)
                     {
+
                         if(excesses[curIndex]==excesses[indexToCompareWith])
                         {
-                            Factorable[] twoFactorys = new Factorable[2];
-                            twoFactorys[0] = f[curIndex];
-                            twoFactorys[1] = f[indexToCompareWith];
-
-                            return twoFactorys;
+                            if(result[indexToCompareWith] == true)
+                            {                        
+                            tmp.add(f[indexToCompareWith]);
+                            result[indexToCompareWith] = false;
+                            }
                         }
                     }
+                if(tmp.size() != 1)
+                {   
+                    Factorable[] fact = new Factorable[tmp.size()];
+                    for(int index = 0; index<tmp.size();index++)
+                    {
+                        fact[index] = tmp.get(index);
+                    }
+                    list.add(fact);
+                }
+                tmp.clear();
             }
+            if(list.isEmpty())
             throw new NoSuchElementException("Нет таких элементов");
+            return list;
+            
         }
     }
     private static int[] getExcesses(Factorable[] f) throws DatabaseNotSetException
@@ -133,7 +154,7 @@ public class Factories
             return excesses;
         }
     }
-    public static Factorable[] getArrWithTwoElsWithSameUsefulExcess(Factorable[] f) throws DatabaseNotSetException
+    public static List<Factorable[]> getArrWithTwoElsWithSameUsefulExcess(Factorable[] f) throws DatabaseNotSetException
     {
         if(f == null)
         {
@@ -141,27 +162,42 @@ public class Factories
         }
         else
         {
+            List<Factorable[]> list = new ArrayList<Factorable[]>();
             int[] usefulExcesses = getUsefulExcesses(f);
-
+            boolean[] result = new boolean[f.length];
+            Arrays.fill(result, Boolean.TRUE);
             int curIndex;
             int indexToCompareWith;
             int len = usefulExcesses.length;
-
+            List<Factorable> tmp = new ArrayList<Factorable>();
             for(curIndex = 0; curIndex < len; curIndex++)
             {
+                tmp.add(f[curIndex]);
                 for(indexToCompareWith = curIndex+1; indexToCompareWith < len; indexToCompareWith++)
                     {
                         if(usefulExcesses[curIndex]==usefulExcesses[indexToCompareWith])
                         {
-                            Factorable[] twoFactorys = new Factorable[2];
-                            twoFactorys[0] = f[curIndex];
-                            twoFactorys[1] = f[indexToCompareWith];
-
-                            return twoFactorys;
+                            if(result[indexToCompareWith] == true)
+                            {                        
+                            tmp.add(f[indexToCompareWith]);
+                            result[indexToCompareWith] = false;
+                            }
                         }
                     }
+                    if(tmp.size() != 1)
+                    {   
+                        Factorable[] fact = new Factorable[tmp.size()];
+                        for(int index = 0; index<tmp.size();index++)
+                        {
+                            fact[index] = tmp.get(index);
+                        }
+                        list.add(fact);
+                    }
+                    tmp.clear();
             }
+            if(list.isEmpty())
             throw new NoSuchElementException("Нет таких элементов");
+            return list;
         }
     }
     private static int[] getUsefulExcesses(Factorable[] f) throws DatabaseNotSetException
