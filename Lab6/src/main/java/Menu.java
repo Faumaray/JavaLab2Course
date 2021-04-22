@@ -180,9 +180,9 @@ public class Menu
                         System.err.println("операция невозможна: завод не задан");
                     } else {
                         for (ArrayList<Number> ar : f) {
-                            System.out.print(ar.get(0));
-                            System.out.print(' ');
-                            System.out.print(ar.get(1));
+                            System.out.print("{"+ar.get(0));
+                            System.out.print(';');
+                            System.out.print(ar.get(1)+ "}");
                             System.out.print(' ');
                         }
                         System.out.print('\n');
