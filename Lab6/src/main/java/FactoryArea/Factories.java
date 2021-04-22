@@ -1,6 +1,8 @@
-package Factory;
+package FactoryArea;
 import Exceptions.DatabaseNotSetException;
 import Exceptions.NullFactorableObjectException;
+import Factories.FactorableFactory;
+import Factories.MetalFactoriesFactory;
 
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -19,6 +21,29 @@ import java.util.NoSuchElementException;
 
 public class Factories 
 {
+
+    private static FactorableFactory factory;
+
+    public static void setFactorableFactory(FactorableFactory ff) {
+        factory = ff;
+    }
+
+    public static Factorable createInstance() {
+        return factory.createInstance();
+    }
+
+    public static Factorable createInstance(String factoryName, int Rate, int numOfMonths) {
+        return factory.createInstance(factoryName, Rate, numOfMonths);
+    }
+
+    public static Factorable getSynchronizedFactorable(Factorable f) {
+        return new SynchronizedFactorable(f);
+    }
+
+    public static Factorable getUnmodifiableFactorable(Factorable f) {
+        return new UnmodifiableFactorable(f);
+    }
+
     public static MetalFactory[] getMetalFactorysArrFromFactorableArr(Factorable[] f) throws DatabaseNotSetException
     {
        if(f == null)
@@ -358,10 +383,5 @@ public class Factories
         }
 
         return f;
-    }
-
-    public static Factorable getSynchronizedFactorable(Factorable f)
-    {
-        return new SynchronizedFactorable(f);
     }
 }

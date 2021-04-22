@@ -1,28 +1,30 @@
 import Exceptions.NullFactorableObjectException;
 import Factory.Factorable;
+import Factory.MetalFactory;
+import Factory.TextileFactory;
+import Threads.ReadingRunnableThread;
+import Threads.ReadingThread;
+import Threads.WritingRunnableThread;
+import Threads.WritingThread;
+import Threads.FactorableSynchronizer;
 
 import java.util.Scanner;
-
-import static MenusMetod.MenuPrints.*;
-
+import static MenuItems.MenuItems.*;
 public class Menu
 {
     public static void main(String[] args) 
     {
         Factorable[] fArr = null;
         Factorable f = null;
-
+        Factorable testing;
         Scanner scan = new Scanner(System.in);
         String m;
         do {
-            System.out.print(LINE +
+            System.out.print(
                     "РАБОТА С БАЗОЙ:\n" +
-                    LINE +
                     " 1 -- вывести полную информацию базы\n" +
-                    LINE +
                     " 2 -- создать базу\n" +
                     " 3 -- задание элемента базы\n" +
-                    LINE +
                     " 4 -- найти в базе объекты,\n" +
                     "      первый функциональный метод которых возвращают одинаковый результат,\n" +
                     "      поместить такие объекты в массив\n" +
@@ -31,32 +33,20 @@ public class Menu
                     "      поместить такие объекты в массив\n" +
                     " 6 -- разбить базу на два массива,\n" +
                     "      в которых будут храниться однотипные элементы\n" +
-                    LINE +
-                    " 7 -- считать базу из байтового потока\n" +
-                    " 8 -- считать базу из текстового потока\n" +
-                    " 9 -- десериализовать базу\n" +
-                    LINE +
-                    " 10 -- записать базу в байтовый поток\n" +
-                    "11 -- записать базу в символьный поток\n" +
-                    "12 -- сериализовать базу\n" +
-                    LINE +
-                    LINE +
                     "РАБОТА С ОБЪЕКТОМ:\n" +
-                    LINE +
-                    "13 -- показать содержимое объекта\n" +
-                    LINE +
-                    "14 -- создать и заполнить объект Seriesable\n" +
-                    "15 -- считать из байтового потока\n" +
-                    "16 -- считать из текстового потока\n" +
-                    "17 -- десериализовать объект\n" +
-                    LINE +
-                    "18 -- записать объект в байтовый поток\n" +
-                    "19 -- записать объект в символьный поток\n" +
-                    "20 -- сериализовать объект\n" +
-                    LINE +
-                    LINE +
-                    "0 -- выйти\n" +
-                    LINE +
+                    " 13 -- показать содержимое объекта\n" +
+                    " 14 -- создать и заполнить объект\n" +
+                    " 15 -- считать из байтового потока\n" +
+                    " 16 -- считать из текстового потока\n" +
+                    " 17 -- десериализовать объект\n" +
+                    " 18 -- записать объект в байтовый поток\n" +
+                    " 19 -- записать объект в символьный поток\n" +
+                    " 20 -- сериализовать объект\n" +
+                    "Работа с Нитями:\n"+
+                    " 21 -- Заполнить нитью +\n"+
+                    "считать нитью\n"+
+                    " 22 -- write-read-write-read....\n"+
+                    " 0 -- выйти\n" +
                     "выбор ... ");
             m = scan.nextLine();
             switch (m) {
@@ -98,48 +88,6 @@ public class Menu
                             "      в которых будут храниться однотипные элементы");
                     printSplitArrIntoTwoMetalAndTextileArrs(fArr);
                     break;
-
-                case "7":
-                    printTask(" 7 -- считать базу из байтового потока");
-                    try {
-                        fArr = printInputBytesAsFactArr();
-                    } catch (NullFactorableObjectException exc) {
-                        System.err.println(exc.getMessage());
-                    }
-                    break;
-
-                case "8":
-                    printTask(" 8 -- считать базу из текстового потока");
-                    try {
-                        fArr = printReadTextAsFactArr();
-                    } catch (NullFactorableObjectException exc) {
-                        System.err.println(exc.getMessage());
-                    }
-                    break;
-
-                case "9":
-                    printTask(" 9 -- десериализовать базу");
-                    try {
-                        fArr = printDeserializeFactArr();
-                    } catch (NullFactorableObjectException exc) {
-                        System.err.println(exc.getMessage());
-                    }
-                    break;
-
-                case "10":
-                    printTask(" 10 -- записать базу в байтовый поток");
-                    printOutputFactArrAsBytes(fArr);
-                    break;
-
-                case "11":
-                    printTask("11 -- записать базу в символьный поток");
-                    printWriteFactArrAsText(fArr);
-                    break;
-
-                case "12":
-                    printTask("12 -- сериализовать базу");
-                    printSerializeFactArr(fArr);
-                    break;
                 // endregion
 
                 // region РАБОТА С ОБЪЕКТОМ
@@ -149,14 +97,14 @@ public class Menu
                     break;
 
                 case "14":
-                    printTask("14 -- создать и заполнить объект Seriesable");
+                    printTask("14 -- создать и заполнить объект");
                     f = printGetAndSetFact();
                     break;
 
                 case "15":
                     printTask("15 -- считать из байтового потока");
                     try {
-                        f = printInputBytesAsFact();
+                        f = printInputBytesAsFac();
                     } catch (NullFactorableObjectException exc) {
                         System.err.println(exc.getMessage());
                     }
@@ -194,12 +142,37 @@ public class Menu
                     printTask("20 -- сериализовать объект");
                     printSerializeFact(f);
                     break;
+
+                case "21":
+                    printTask("21 -- заполнить нитью +\n" +
+                            "      считать   нитью");
+
+                    testing = new MetalFactory("Тест", 100, 16);
+                    WritingThread wt = new WritingThread(testing);
+                    ReadingThread rt = new ReadingThread(testing);
+
+                    wt.setPriority(Thread.MAX_PRIORITY);
+                    wt.start();
+
+                    rt.setPriority(Thread.MIN_PRIORITY);
+                    rt.start();
+                    break;
+
+                case "22":
+                    printTask("22 -- write-read-write-read...");
+
+
+                    testing = new TextileFactory("Тест", 100, 16);
+                    FactorableSynchronizer ssyncher = new FactorableSynchronizer(testing);
+                    WritingRunnableThread wrt = new WritingRunnableThread(ssyncher);
+                    ReadingRunnableThread rrt = new ReadingRunnableThread(ssyncher);
+
+                    new Thread(wrt).start();
+                    new Thread(rrt).start();
                 // endregion
                 default:
                     break;
             }
-            printExit();
-            System.out.println();
         } while (!m.equals("0"));
     }
  

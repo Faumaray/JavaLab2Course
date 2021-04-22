@@ -1,45 +1,32 @@
-package MenusMetod;
+package MenuItems;
 
-import Exceptions.IllegalIndexException;
-import Exceptions.NullFactorableObjectException;
+import Exceptions.*;
+import Factory.Factorable;
+import Factory.Factories;
 import Factory.MetalFactory;
 import Factory.TextileFactory;
-import InputAndOutput.InputAndOutputAsFactorable;
-import Factory.Factorable;
 
 import java.io.*;
 import java.util.List;
 import java.util.Scanner;
 
-import static InputAndOutput.InputAndOutputFactorableArray.*;
-import static InputAndOutput.InputAndOutputAsFactorable.*;
 import static Factory.Factories.*;
 
 
-public class MenuPrints 
-{
-    public static final String LINE = "-------------------------------------------------------------------------------\n";
-    private static final String BYTES_FILE_WITH_FACT = "FactAsBytes.bin";
-    private static final String TEXT_FILE_WITH_FACT = "FactAsText.txt";
-    private static final String SERIALIZED_FILE_WITH_FACT = "FactSerialized.bin";
-
-    private static final String BYTES_FILE_WITH_FACT_ARR = "FactArrAsBytes.bin";
-    private static final String TEXT_FILE_WITH_FACT_ARR = "FactArrAsText.txt";
-    private static final String SERIALIZED_FILE_WITH_FACT_ARR = "FactArrSerialized.bin";
+public class MenuItems {
+    private static final String BYTES_FILE = "bytes.bin";
+    private static final String TEXT_FILE = "text.txt";
+    private static final String OBJECT_FILE = "object.bin";
+    
     public static void printTask(String task) {
-        System.out.print('\n' + task + '\n' + LINE);
-    }
-    public static void printExit() {
-        System.out.print('\n' + "нажмите Enter, чтобы выйти в меню ... ");
-        Scanner scan = new Scanner(System.in);
-        scan.nextLine();
+        System.out.print('\n' + task + '\n');
     }
     public static void printFactArrAsNamesOfEls(Factorable[] fArr) {
         System.out.print("база данных: ");
         if (fArr == null) {
             System.err.println("не задана");
         } else {
-            System.out.print('\n' + LINE);
+            System.out.print('\n');
 
             for (int i = 0; i < fArr.length; i++) {
                 System.out.print("[" + i + "] ");
@@ -56,12 +43,11 @@ public class MenuPrints
         if (fArr == null) {
             System.err.println("не задана");
         } else {
-            System.out.print('\n' + LINE);
+            System.out.print('\n');
 
             for (int i = 0; i < fArr.length; i++) { // по элементам БД
                 System.out.print("[" + i + "] ");
                 printFact(fArr[i]);
-                System.out.print(LINE + LINE);
             }
         }
     }
@@ -70,20 +56,7 @@ public class MenuPrints
             System.err.println("Завод не задан");
         } else {
             System.out.println('«' + f.getName() + '»');
-            System.out.print(LINE);
             System.out.println(f);
-        }
-    }
-    private static void printElsOfFact(Factorable f) {
-        if (f == null) {
-            System.err.println("завод не задан");
-        } else 
-        {
-            for (int i=0;i<f.getNumberOfEls(); i++)
-            {
-                System.out.print("Месяц №" +i + ") ");
-                System.out.println("Произведено в месяц: " +f.getEl(i) + " Процент дефекта: "+ f.getDefect(i) + ")");
-            }
         }
     }
     public static Factorable[] printGetFactArr()
@@ -173,7 +146,6 @@ public class MenuPrints
         
         return index;
     }
-
     public static void printSetElOfArr(Factorable[] db) {
         if (db == null) {
             System.err.println("операция невозможна: база данных не задана");
@@ -186,22 +158,20 @@ public class MenuPrints
             Scanner scan = new Scanner(System.in);
             String str;
 
-            System.out.print("задание элемента под индексом " + index + '\n' + LINE);
+            System.out.print("задание элемента под индексом " + index + '\n');
             do {
                 System.out.print("выберите тип элемента\n" +
-                        LINE +
                         "1 -- MetalFactory\n" +
                         "2 -- TextileFactory\n" +
-                        LINE +
                         "выбор ... ");
                 str = scan.nextLine();
                 System.out.println();
 
                 if (str.equals("1")) {
-                    db[index] = printGetAndSetMetalFactory();
+                    db[index] = Factories.getSynchronizedFactorable(printGetAndSetMetalFactory());
                     break;
                 } else if (str.equals("2")) {
-                    db[index] = printGetAndSetTextileFactory();
+                    db[index] = Factories.getSynchronizedFactorable(printGetAndSetTextileFactory());
                     break;
                 } else {
                     System.err.println("ошибка: неверный пункт меню");
@@ -219,7 +189,7 @@ public class MenuPrints
         System.out.println("завод успешно создан");
         System.out.println();
 
-        System.out.print("заполните завод кол-вом произведенной продукции в месяц-ах и их процентом дефекта\n" + LINE);
+        System.out.print("заполните завод кол-вом произведенной продукции в месяц-ах и их процентом дефекта\n");
         printSetElsOfFact(mf);
         return mf;
     }
@@ -233,7 +203,7 @@ public class MenuPrints
         System.out.println("завод успешно создан");
         System.out.println();
 
-        System.out.print("заполните завод кол-вом произведенной продукции в месяц-ах и их процентом дефекта\n" + LINE);
+        System.out.print("заполните завод кол-вом произведенной продукции в месяц-ах и их процентом дефекта\n");
         printSetElsOfFact(tf);
         return tf;
     }
@@ -276,7 +246,7 @@ public class MenuPrints
             System.err.println("Завод не задан");
         } else {
             for (int i = 0; i < f.getNumberOfEls(); i++) {
-                System.out.print("элемент под индексом  " + "[" + i + "]" + '\n' + LINE);
+                System.out.print("элемент под индексом  " + "[" + i + "]" + '\n');
                 try {
                     if (!printSetElOfFactory(f, i)) {
                         i--;
@@ -350,10 +320,8 @@ public class MenuPrints
 
         do {
             System.out.print("выберите тип элемента\n" +
-                    LINE +
                     "1 -- " + MetalFactory.class.getName() + "\n" +
                     "2 -- " + TextileFactory.class.getName() + "\n" +
-                    LINE +
                     "выбор ... ");
             str = scan.nextLine();
             System.out.println();
@@ -371,11 +339,11 @@ public class MenuPrints
 
         return s;
     }
-    public static void printGetArrWithTwoElsWithSameExcess(Factorable[] f) 
-    {
+    public static void printGetArrWithTwoElsWithSameExcess(Factorable[] fArr) {
+        
         List<Factorable[]> arr;
         try {
-            arr = getArrWithTwoElsWithSameExcess(f);
+            arr = getArrWithTwoElsWithSameExcess(fArr);
             System.out.println("база данных успешно разделена");
             System.out.println();
             int count = 0;
@@ -384,7 +352,7 @@ public class MenuPrints
                 for (Factorable factory : factorables) 
                 {
                     System.out.println('«' + factory.getName() + '»');
-                }   
+                }  
                 count++; 
             }
             System.out.println("Какой массив вывести?");
@@ -394,12 +362,11 @@ public class MenuPrints
             System.err.println(exc.getMessage());
         }
     }
-    public static void printGetArrWithTwoElsWithSameUsefulExcess(Factorable[] f) 
-    {
+    public static void printGetArrWithTwoElsWithSameUsefulExcess(Factorable[] fArr) {
         List<Factorable[]> arr;
 
         try {
-            arr = getArrWithTwoElsWithSameUsefulExcess(f);
+            arr = getArrWithTwoElsWithSameUsefulExcess(fArr);
             System.out.println("база данных успешно разделена");
             System.out.println();
             int count = 0;
@@ -408,7 +375,7 @@ public class MenuPrints
                 for (Factorable factory : factorables) 
                 {
                     System.out.println('«' + factory.getName() + '»');
-                }   
+                }
                 count++; 
             }
             System.out.println("Какой массив вывести?");
@@ -441,8 +408,8 @@ public class MenuPrints
         } else {
             FileOutputStream fileOutputter;
             try {
-                fileOutputter = new FileOutputStream(BYTES_FILE_WITH_FACT);
-                InputAndOutputAsFactorable.outputFactAsBytes(f, fileOutputter);
+                fileOutputter = new FileOutputStream(BYTES_FILE);
+                Factories.outputFactorable(f, fileOutputter);
                 fileOutputter.flush();
                 fileOutputter.close();
 
@@ -458,8 +425,8 @@ public class MenuPrints
         } else {
             FileWriter fileWriter;
             try {
-                fileWriter = new FileWriter(TEXT_FILE_WITH_FACT);
-                InputAndOutputAsFactorable.writeFactAsText(f, fileWriter);
+                fileWriter = new FileWriter(TEXT_FILE);
+                Factories.writeFactorable(f, fileWriter);
                 fileWriter.flush();
                 fileWriter.close();
 
@@ -469,15 +436,15 @@ public class MenuPrints
             }
         }
     }
-
-    public static void printSerializeFact(Factorable f) {
+    public static void printSerializeFact(Factorable f) 
+    {
         if (f == null) {
             System.err.println("операция невозможна: объект не задан");
         } else {
             FileOutputStream fileOutputter;
             try {
-                fileOutputter = new FileOutputStream(SERIALIZED_FILE_WITH_FACT);
-                InputAndOutputAsFactorable.serializeFact(f, fileOutputter);
+                fileOutputter = new FileOutputStream(OBJECT_FILE);
+                Factories.serializeFactorable(f, fileOutputter);
                 fileOutputter.flush();
                 fileOutputter.close();
 
@@ -487,115 +454,66 @@ public class MenuPrints
             }
         }
     }
+   public static Factorable printInputBytesAsFac() throws NullFactorableObjectException
+   {
+       Factorable f = null;
 
-    public static void printOutputFactArrAsBytes(Factorable[] fArr) {
-        if (fArr == null) {
-            System.err.println("операция невозможна: массив не задан");
-        } else {
-            FileOutputStream fileOutputter;
-            try {
-                fileOutputter = new FileOutputStream(BYTES_FILE_WITH_FACT_ARR);
-                outputFactArrAsBytes(fArr, fileOutputter);
-                fileOutputter.flush();
-                fileOutputter.close();
+       FileInputStream fileInputter;
+       try 
+       {
+           fileInputter = new FileInputStream(BYTES_FILE);
+           f = inputFactorable(fileInputter);
+           fileInputter.close();
 
-                System.out.println("объект успешно записан в байтовый поток");
-            } catch (IOException exc) {
-                System.err.println(exc.getMessage());
-            }
-        }
-    }
-
-    public static void printWriteFactArrAsText(Factorable[] fArr) {
-        if (fArr == null) {
-            System.err.println("операция невозможна: массив не задан");
-        } else {
-            FileWriter fileWriter;
-            try {
-                fileWriter = new FileWriter(TEXT_FILE_WITH_FACT_ARR);
-                writeFactArrAsText(fArr, fileWriter);
-                fileWriter.flush();
-                fileWriter.close();
-
-                System.out.println("массив успешно записан в текстовый поток");
-            } catch (IOException exc) {
-                System.err.println(exc.getMessage());
-            }
-        }
-    }
-
-    public static void printSerializeFactArr(Factorable[] fArr) {
-        if (fArr == null) {
-            System.err.println("операция невозможна: массив не задан");
-        } else {
-            FileOutputStream fileOutputter;
-            try {
-                fileOutputter = new FileOutputStream(SERIALIZED_FILE_WITH_FACT_ARR);
-                serializeFactArr(fArr, fileOutputter);
-                fileOutputter.flush();
-                fileOutputter.close();
-
-                System.out.println("массив успешно сериализован");
-            } catch (IOException exc) {
-                System.err.println(exc.getMessage());
-            }
-        }
-    }
-
-    public static Factorable printInputBytesAsFact() throws NullFactorableObjectException {
-        Factorable f = null;
-
-        FileInputStream fileInputter;
-        try {
-            fileInputter = new FileInputStream(BYTES_FILE_WITH_FACT);
-            f = inputBytesAsFact(fileInputter);
-            fileInputter.close();
-
-            System.out.println("объект успешно считан из байтового потока (файла)");
-        } catch (IOException | NullFactorableObjectException | ClassNotFoundException exc) {
+           System.out.println("объект успешно считан из байтового потока (файла)");
+       }
+        catch (IOException | NullFactorableObjectException | ClassNotFoundException exc) 
+        {
             System.err.println(exc.getMessage());
+            exc.printStackTrace();
         }
 
-        if (f == null) {
-            throw new NullFactorableObjectException("не удалось считать Factorable");
+        if (f == null) 
+        {
+            throw new NullFactorableObjectException("не удалось считать Seriesable");
         }
 
         return f;
+    
+   }
+   
+   public static Factorable printReadTextAsFact() throws NullFactorableObjectException {
+    Factorable f = null;
+
+    FileReader fileReader;
+    BufferedReader bufferedReader;
+    try {
+        fileReader = new FileReader(TEXT_FILE);
+        bufferedReader = new BufferedReader(fileReader);
+
+        f = readFactorable(bufferedReader);
+
+        bufferedReader.close();
+        fileReader.close();
+
+        System.out.println("объект успешно считан из тектового потока (файла)");
+    } catch (IOException | NullFactorableObjectException | ClassNotFoundException exc) {
+        System.err.println(exc.getMessage());
     }
 
-        public static Factorable printReadTextAsFact() throws NullFactorableObjectException {
-            Factorable f = null;
+    if (f == null) {
+        throw new NullFactorableObjectException("не удалось считать Factorable");
+    }
 
-            FileReader fileReader;
-            BufferedReader bufferedReader;
-            try {
-                fileReader = new FileReader(TEXT_FILE_WITH_FACT);
-                bufferedReader = new BufferedReader(fileReader);
-
-                f = readTextAsFact(bufferedReader);
-
-                bufferedReader.close();
-                fileReader.close();
-
-                System.out.println("объект успешно считан из тектового потока (файла)");
-            } catch (IOException | NullFactorableObjectException | ClassNotFoundException exc) {
-                System.err.println(exc.getMessage());
-            }
-
-            if (f == null) {
-                throw new NullFactorableObjectException("не удалось считать Factorable");
-            }
-
-            return f;
-        }
-
+    return f;
+    }
     public static Factorable printDeserializeFact() throws NullFactorableObjectException {
         Factorable f = null;
 
         FileInputStream fileInputter;
         try {
-            fileInputter = new FileInputStream(SERIALIZED_FILE_WITH_FACT);
-            f = deserealizeFact(fileInputter);
+            fileInputter = new FileInputStream(OBJECT_FILE);
+            f = deserializeFactorable(fileInputter);
             fileInputter.close();
 
             System.out.println("объект успешно десериализован (из файла)");
@@ -610,66 +528,7 @@ public class MenuPrints
         return f;
     }
 
-    public static Factorable[] printInputBytesAsFactArr() throws NullFactorableObjectException {
-        Factorable[] fArr = null;
-
-        FileInputStream fileInputter;
-        try {
-            fileInputter = new FileInputStream(BYTES_FILE_WITH_FACT_ARR);
-            fArr = inputBytesAsFactArr(fileInputter);
-            fileInputter.close();
-
-            System.out.println("массив успешно считан из байтового потока (файла)");
-        } catch (IOException | NullFactorableObjectException | ClassNotFoundException exc) {
-            System.err.println(exc.getMessage());
-        }
-
-        if (fArr == null) {
-            throw new NullFactorableObjectException("не удалось считать массив Factorable[]");
-        }
-
-        return fArr;
-    }
-    public static Factorable[] printReadTextAsFactArr() throws NullFactorableObjectException {
-        Factorable[] fArr = null;
-
-        FileReader fileReader;
-        try {
-            fileReader = new FileReader(TEXT_FILE_WITH_FACT_ARR);
-            fArr = readTextAsFactArr(fileReader);
-            fileReader.close();
-
-            System.out.println("массив успешно считан из тектового потока (файла)");
-        } catch (IOException | NullFactorableObjectException | ClassNotFoundException exc) {
-            System.err.println(exc.getMessage());
-        }
-
-        if (fArr == null) {
-            throw new NullFactorableObjectException("не удалось считать массив Factorable[]");
-        }
-
-        return fArr;
-    }
-
-    public static Factorable[] printDeserializeFactArr() throws NullFactorableObjectException {
-        Factorable[] fArr = null;
-
-        FileInputStream fileInputter;
-        try {
-            fileInputter = new FileInputStream(SERIALIZED_FILE_WITH_FACT_ARR);
-            fArr = deserializeFactArr(fileInputter);
-            fileInputter.close();
-
-            System.out.println("массив успешно десериализована (из файла)");
-        } catch (IOException | NullFactorableObjectException exc) {
-            System.err.println(exc.getMessage());
-        }
-
-        if (fArr == null) {
-            throw new NullFactorableObjectException("не удалось десериализовать массив Factorable[]");
-        }
-
-        return fArr;
-    }
+    
 }
+
 

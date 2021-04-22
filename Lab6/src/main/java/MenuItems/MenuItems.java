@@ -1,31 +1,42 @@
+package MenuItems;
 
 import Exceptions.*;
-import Factory.Factorable;
-import Factory.Factories;
-import Factory.MetalFactory;
-import Factory.TextileFactory;
+import Factories.FactorableFactory;
+import Factories.MetalFactoriesFactory;
+import Factories.TextileFactoriesFactory;
+import FactoryArea.Factorable;
+import FactoryArea.Factories;
+import FactoryArea.MetalFactory;
+import FactoryArea.TextileFactory;
 
 import java.io.*;
+import java.util.List;
 import java.util.Scanner;
 
-import static Factory.Factories.*;
+import static FactoryArea.Factories.*;
 
-
-class MenuItems {
-    public static final String LINE = "-------------------------------------------------------------------------------\n";
+public class MenuItems 
+{
     private static final String BYTES_FILE = "bytes.bin";
     private static final String TEXT_FILE = "text.txt";
     private static final String OBJECT_FILE = "object.bin";
-    
+
     public static void printTask(String task) {
-        System.out.print('\n' + task + '\n' + LINE);
+        System.out.print('\n' + task + '\n');
     }
+
+    static void printExit() {
+        System.out.println('\n' + "нажмите Enter, чтобы выйти в меню ...");
+        Scanner scan = new Scanner(System.in);
+        scan.nextLine();
+    }
+
     public static void printFactArrAsNamesOfEls(Factorable[] fArr) {
         System.out.print("база данных: ");
         if (fArr == null) {
             System.err.println("не задана");
         } else {
-            System.out.print('\n' + LINE);
+            System.out.print('\n');
 
             for (int i = 0; i < fArr.length; i++) {
                 System.out.print("[" + i + "] ");
@@ -37,29 +48,30 @@ class MenuItems {
             }
         }
     }
+
     public static void printFactArr(Factorable[] fArr) {
         System.out.print("база данных: ");
         if (fArr == null) {
             System.err.println("не задана");
         } else {
-            System.out.print('\n' + LINE);
+            System.out.print('\n');
 
             for (int i = 0; i < fArr.length; i++) { // по элементам БД
                 System.out.print("[" + i + "] ");
                 printFact(fArr[i]);
-                System.out.print(LINE + LINE);
             }
         }
     }
+
     private static void printFact(Factorable f) {
         if (f == null) {
             System.err.println("Завод не задан");
         } else {
             System.out.println('«' + f.getName() + '»');
-            System.out.print(LINE);
             System.out.println(f);
         }
     }
+
     public static Factorable[] printGetFactArr()
     {
         int len;
@@ -147,7 +159,8 @@ class MenuItems {
         
         return index;
     }
-    public static void printSetElOfArr(Factorable[] db) {
+
+    public static void printSetElOfFarr(Factorable[] db) {
         if (db == null) {
             System.err.println("операция невозможна: база данных не задана");
         } else {
@@ -156,60 +169,45 @@ class MenuItems {
                     "(нумерация начинается с нуля):");
             int index = printGetIndex(db.length - 1);
 
-            Scanner scan = new Scanner(System.in);
-            String str;
+            System.out.print("задание элемента под индексом " + index + '\n');
 
-            System.out.print("задание элемента под индексом " + index + '\n' + LINE);
-            do {
-                System.out.print("выберите тип элемента\n" +
-                        LINE +
-                        "1 -- MetalFactory\n" +
-                        "2 -- TextileFactory\n" +
-                        LINE +
-                        "выбор ... ");
-                str = scan.nextLine();
-                System.out.println();
-
-                if (str.equals("1")) {
-                    db[index] = Factories.getSynchronizedFactorable(printGetAndSetMetalFactory());
-                    break;
-                } else if (str.equals("2")) {
-                    db[index] = Factories.getSynchronizedFactorable(printGetAndSetTextileFactory());
-                    break;
-                } else {
-                    System.err.println("ошибка: неверный пункт меню");
-                }
-            } while (true);
+            db[index] = printCreateFac();
+            printSetElsOfFact(db[index]);
         }
     }
-    private static MetalFactory printGetAndSetMetalFactory() {
-        System.out.print("введите имя MetalFactory ................................. ");
-        Scanner scan = new Scanner(System.in);
-        String factoryName = scan.nextLine();
-        int numOfMonths = printGetNumOfMonths();
-        int rate = printGetRate();
-        MetalFactory mf = new MetalFactory(factoryName, rate, numOfMonths);
-        System.out.println("завод успешно создан");
-        System.out.println();
 
-        System.out.print("заполните завод кол-вом произведенной продукции в месяц-ах и их процентом дефекта\n" + LINE);
-        printSetElsOfFact(mf);
-        return mf;
-    }
-    private static TextileFactory printGetAndSetTextileFactory() {
-        System.out.print("введите имя TextileFactory ................................. ");
+    public static Factorable printCreateFac() {
         Scanner scan = new Scanner(System.in);
-        String factoryName = scan.nextLine();
-        int numOfMonths = printGetNumOfMonths();
-        int rate = printGetRate();
-        TextileFactory tf = new TextileFactory(factoryName, rate, numOfMonths);
-        System.out.println("завод успешно создан");
-        System.out.println();
+        String str;
+        do {
+            System.out.print("выберите тип элемента\n" +
+                    "1 -- " + MetalFactory.class.getName() + "\n" +
+                    "2 -- " + TextileFactory.class.getName() + "\n" +
+                    "выбор ... ");
+            str = scan.nextLine();
+            System.out.println();
 
-        System.out.print("заполните завод кол-вом произведенной продукции в месяц-ах и их процентом дефекта\n" + LINE);
-        printSetElsOfFact(tf);
-        return tf;
+            if (str.equals("1")) {
+                setFactorableFactory(new MetalFactoriesFactory());
+                break;
+            } else if (str.equals("2")) {
+                setFactorableFactory(new TextileFactoriesFactory());
+                break;
+            } else {
+                System.err.println("ошибка: неверный пункт меню");
+            }
+        } while (true);
+
+        System.out.print("введите название завода ................................. ");
+        String factoryName = scan.nextLine();
+
+        int Rate = printGetRate();
+
+        int numOfMonths = printGetNumOfMonths();
+
+        return createInstance(factoryName, Rate, numOfMonths);
     }
+
     private static int printGetNumOfMonths() 
     {
         int num;
@@ -243,13 +241,14 @@ class MenuItems {
             }
         } while (true);
     }
-    private static void printSetElsOfFact(Factorable f) 
+
+    public static void printSetElsOfFact(Factorable f) 
     {
         if (f == null) {
             System.err.println("Завод не задан");
         } else {
             for (int i = 0; i < f.getNumberOfEls(); i++) {
-                System.out.print("элемент под индексом  " + "[" + i + "]" + '\n' + LINE);
+                System.out.print("элемент под индексом  " + "[" + i + "]" + '\n');
                 try {
                     if (!printSetElOfFactory(f, i)) {
                         i--;
@@ -262,6 +261,7 @@ class MenuItems {
             }
         }
     }
+
     private static boolean printSetElOfFactory(Factorable f, int index) throws Exception 
     {
         if (f == null) {
@@ -315,57 +315,49 @@ class MenuItems {
             }
         } while (true);
     }
-    public static Factorable printGetAndSetFact() {
-        Factorable s;
 
-        Scanner scan = new Scanner(System.in);
-        String str;
-
-        do {
-            System.out.print("выберите тип элемента\n" +
-                    LINE +
-                    "1 -- " + MetalFactory.class.getName() + "\n" +
-                    "2 -- " + TextileFactory.class.getName() + "\n" +
-                    LINE +
-                    "выбор ... ");
-            str = scan.nextLine();
-            System.out.println();
-
-            if (str.equals("1")) {
-                s = printGetAndSetMetalFactory();
-                break;
-            } else if (str.equals("2")) {
-                s = printGetAndSetTextileFactory();
-                break;
-            } else {
-                System.err.println("ошибка: неверный пункт меню");
-            }
-        } while (true);
-
-        return s;
-    }
     public static void printGetArrWithTwoElsWithSameExcess(Factorable[] fArr) {
-        Factorable[] arrWithTwoElsWithSameExcess;
-
+        
+        List<Factorable[]> arr;
         try {
-            arrWithTwoElsWithSameExcess = getArrWithTwoElsWithSameExcess(fArr);
+            arr = getArrWithTwoElsWithSameExcess(fArr);
             System.out.println("база данных успешно разделена");
             System.out.println();
-
-            printFactArr(arrWithTwoElsWithSameExcess);
+            int count = 0;
+            for (Factorable[] factorables : arr) {
+                System.out.println("Масств №"+ count);
+                for(Factorable factory : factorables)
+                {
+                    System.out.println('«' + factory.getName() + '»');
+                } 
+                count++; 
+            }
+            System.out.println("Какой массив вывести?");
+            int choice = printGetIndex(arr.size()-1);
+            printFactArr(arr.get(choice));
         } catch (Exception exc) {
             System.err.println(exc.getMessage());
         }
     }
     public static void printGetArrWithTwoElsWithSameUsefulExcess(Factorable[] fArr) {
-        Factorable[] arrWithTwoElsWithSameUsefulExcess;
+        List<Factorable[]> arr;
 
         try {
-            arrWithTwoElsWithSameUsefulExcess = getArrWithTwoElsWithSameUsefulExcess(fArr);
+            arr = getArrWithTwoElsWithSameUsefulExcess(fArr);
             System.out.println("база данных успешно разделена");
             System.out.println();
-
-            printFactArr(arrWithTwoElsWithSameUsefulExcess);
+            int count = 0;
+            for (Factorable[] factorables : arr) {
+                System.out.println("Масств №"+ count);
+                for(Factorable factory : factorables)
+                {
+                    System.out.println('«' + factory.getName() + '»');
+                } 
+                count++; 
+            }
+            System.out.println("Какой массив вывести?");
+            int choice = printGetIndex(arr.size()-1);
+            printFactArr(arr.get(choice));
         } catch (Exception exc) {
             System.err.println(exc.getMessage());
         }
@@ -387,6 +379,7 @@ class MenuItems {
             }
         }
     }
+
     public static void printOutputFactAsBytes(Factorable f) {
         if (f == null) {
             System.err.println("операция невозможна: объект не задан");
@@ -439,9 +432,10 @@ class MenuItems {
             }
         }
     }
-   static Factorable printInputBytesAsFac() throws NullFactorableObjectException
+
+    public static Factorable printInputBytesAsFac() throws NullFactorableObjectException
    {
-       Factorable f;
+       Factorable f = null;
 
        FileInputStream fileInputter;
        try 
@@ -513,6 +507,31 @@ class MenuItems {
         return f;
     }
 
+    static void printSetFactorableFactory() {
+        String menuItem;
+        Scanner scan = new Scanner(System.in);
+        do {
+            System.out.print("создавать по-умолчанию объекты следующего типа:\n" +
+                    " 1 -- Metal Factories\n" +
+                    " 2 -- Textile Factories\n" +
+                    "выбор ... ");
+            menuItem = scan.nextLine();
+
+            FactorableFactory ff;
+            switch (menuItem) {
+                case "1":
+                    ff = new MetalFactoriesFactory();
+                    break;
+                case "2":
+                    ff = new TextileFactoriesFactory();
+                    break;
+                default:
+                    System.err.println("ошибка: неверный пункт меню");
+                    continue;
+            }
+            System.out.println("фабрика успешно установлена");
+            Factories.setFactorableFactory(ff);
+            break;
+        } while (true);
+    }
 }
-
-

@@ -2,7 +2,7 @@ package Threads;
 
 import java.util.Random;
 
-import Factory.Factorable;
+import FactoryArea.Factorable;
 
 public class WritingThread extends Thread {
     private Factorable f;

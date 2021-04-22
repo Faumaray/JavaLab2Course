@@ -349,7 +349,10 @@ public class Menu
             int count = 0;
             for (Factorable[] factorables : arr) {
                 System.out.println("Масств №"+ count);
-                printDbAsNamesOfEls(factorables);  
+                for (Factorable factory : factorables) 
+                {
+                    System.out.println('«' + factory.getName() + '»');
+                }  
                 count++; 
             }
             System.out.println("Какой массив вывести?");
@@ -370,7 +373,10 @@ public class Menu
             int count = 0;
             for (Factorable[] factorables : arr) {
                 System.out.println("Масств №"+ count);
-                printDbAsNamesOfEls(factorables);  
+                for (Factorable factory : factorables) 
+                {
+                    System.out.println('«' + factory.getName() + '»');
+                }  
                 count++; 
             }
             System.out.println("Какой массив вывести?");
