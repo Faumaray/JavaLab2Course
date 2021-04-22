@@ -32,7 +32,7 @@ public class TextileFactory implements Factorable
         {
             sum += value;
         }
-        return (sum-Rate);
+        return (sum-(Rate*output.length));
     }
     //Метод получения общего кол-ва полезной избыточной продукции (Функциональный метод №2)
     @Override
