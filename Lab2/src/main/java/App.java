@@ -23,7 +23,7 @@ public class App {
         System.out.println("\nТретья позиция первого вектора " + o.getElement(2));
         System.out.println("\nМаксимум второго вектора " + o2.GetMaxVal());
         System.out.println("\nМинимум первого вектора " + o.GetMinVal());
-        o2.HighSort();
+        o2.Sort();
         System.out.println("\nОтсорированный второй вектор\n"+ o2.toString());
         o2.MultiplyByNuber(0.5);
         System.out.println("\nВторой вектор умноженный на 0.5\n"+o2.toString());
